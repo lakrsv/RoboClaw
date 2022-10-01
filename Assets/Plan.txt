@@ -1,0 +1,61 @@
+Ludum Dare 51
+Theme: Every 10 seconds
+
+Roger High-Level Ideas:
+
+	1. You have another you have to keep alive (micro management game where losing a unit means you slowly 		
+	start getting overwhelmed)
+
+	2. Another letter gets added, I think those beat games but with letters coming down. Difficult could be 		
+	speed and number of simultaneous letters.
+
+	3. Someone else needs saving. This could a lot of things, maybe even a lunar lander style game, or a 		
+	driving game and you're an ambulance.
+
+	4. You get faster, some twist on flappy birds, maybe instead of dodgind columns you are an xwing from 		
+	starwars escaping exploding debris from the death star in slowmo at first
+
+	5. An angel gets its wing, and you're a demon fighting them and the flying ones are harder to kill
+
+	6. Another customer comes in, some twist on overcooked.
+
+	7. The vines grow and you cut them back, once you're overgrown you lose
+
+	8. You have to go to the bathroom and you're trying to get chores done.. grocery shop
+
+	9. The area you are protecting expands, middle command with city expansion makes it harder
+
+	10. Another bug gets stuck in your spider web, too many and your web collapses, have to wrap them and eat 		
+	and bigger bugs take longer but give more juice which lets you mnake more web for repairs. Some bugs 		
+	fly through ripping the web.
+
+Lars High-Level Ideas:
+	1. You are in a perpetual boss fight. Every 10 seconds, something different happens (Boss gets stronger, the environment changes, etc)
+	2. You are in a train tunnel. You must platform and get to  the end, every 10 seconds a new train comes, you need to finish chunks of the track before the train arrives.
+	3. You are a real estate agent. Every 10 seconds, you get a new house to inspect and qualify for sale, which you must set up for sale within 10 seconds. The more correct you are, the more money and reputation you earn.
+
+Paula High-Level Ideas:
+	1. You must feed someone/something something every 10 seconds, otherwise something bad happens
+	2. You are climbing a mountain. Every 10 seconds, a boulder or something falls down
+	3. You're a whale, and every 10 seconds you need to go down to breathe. Gameplay.. hunt flying fish.
+
+
+PLAN ITERATION - PERPETUAL BOSSFIGHT
+
+The game starts with you in a high-tech sci-fi room. You are in front of a button, which will destroy a reactor room and cause a cascading chain reaction failure. Basically you're blowing the fuck out of some kind of planet.
+
+When you click the button, a countdown timer starts. It moves to the UI. It starts counting down from 10 seconds. Every 10 seconds, something different happens..
+1. First, the reactor room explodes. The world starts to get destroyed and you get thrown into maybe a cinematic moving you into a play area.
+2. 10 second timer restarts, you have 10 seconds to get out of the room you're currently in. This is the theme, you have to constantly keep moving early game. The first room has a set of weapons/armor for you to pick-up? (This is a first person 3d game)
+3. You are introduced to fundamental mechanics of the game (Jetpack double jump, jetpack dash/dodge, shooting etc)
+4. Run and gun, you are navigating a level and killing various enemies. This lasts for a few room, and you get to the boss fight.
+5. BOSS FIGHT. The boss is maybe some type of robot (because they are easy to make). The robot has certain hard-coded phases, it will move through these every 10 seconds until it has lost 25% of its health. 
+6. At 75% health, the next stage starts. The room is destroyed and you fall to the next floor. The boss developers FRIKKIN SPIDER ROBOT LEGS and ROCKET LAUNCHERS. Cinematic shows the transition. The boss starts blasting you with rockets.
+7. At 50% health, the next stage starts. The boss is gone.. Where did it go? You continue traversing a few rooms of fights
+8. YOU GET TO A BIG ARENA, THE BOSS IS THERE. BUT WAIT.. WHAT'S HAPPENING? MULTIPLE ROBOTS COMBINE INTO A MASSIVE MEGA ROBOT!!!! YOU MUST DESTROY DIFFERENT PARTS OF IT AND NAVIGATE THE ROOM. EVERY 10 SECONDS, DIFFERENT MECHANICS ARE ENABLED!!
+9. 25% HEALTH.. GOD OF WAR STYLE COMBAT. THE BOSS REINFORCED WITH ARMOR PLATES, BUT WAIT, WHAT ARE THOSE SHINY SPOTS? VULNERABILITIES.. YOU STAGGER THE BOSS AND MUST GO UP TO THE VULNERABILITIES TO DO DAMAGE.
+9. You win the game when you kill the boss
+
+
+
+	
