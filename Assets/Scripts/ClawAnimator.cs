@@ -18,9 +18,25 @@ public class ClawAnimator : MonoBehaviour
         }
     }
 
+    public void OpenClaw()
+    {
+        _animator.SetBool("ClawOpen", true);
+    }
+
+
+    public void CloseClaw()
+    {
+        _animator.SetBool("ClawOpen", false);
+    }
+
+    public void GrabTarget()
+    {
+        _animator.SetBool("GrabTarget", true);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

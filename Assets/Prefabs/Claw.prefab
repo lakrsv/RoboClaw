@@ -821,6 +821,7 @@ MonoBehaviour:
   _speed: 5
   _accelerationSpeed: 5
   _rigidBody: {fileID: 4884186724062090577}
+  _clawAnimator: {fileID: 0}
 --- !u!54 &4884186724062090577
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -848,8 +849,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.22, y: 0.06, z: 0.22}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.22000141, y: 0.14833091, z: 0.22}
+  m_Center: {x: -1.8465429e-10, y: -0.0291655, z: -8.8652125e-10}
 --- !u!136 &7850589992926244821
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -860,7 +861,7 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 806acd32a188ba44eada4a3f14d678f7, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.03
+  m_Radius: 0.045
   m_Height: 0.23
   m_Direction: 0
   m_Center: {x: 0, y: 0, z: 0.12}
@@ -874,10 +875,10 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 806acd32a188ba44eada4a3f14d678f7, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.03
+  m_Radius: 0.045
   m_Height: 0.23
   m_Direction: 0
-  m_Center: {x: 0, y: 0, z: -0.12}
+  m_Center: {x: 0, y: 0.06, z: -0.12}
 --- !u!136 &8989865344299848668
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -888,10 +889,10 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 806acd32a188ba44eada4a3f14d678f7, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.03
+  m_Radius: 0.045
   m_Height: 0.23
   m_Direction: 2
-  m_Center: {x: -0.12, y: 0, z: 0}
+  m_Center: {x: -0.12, y: 0.06, z: 0}
 --- !u!136 &6517490324830130773
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -902,7 +903,7 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 806acd32a188ba44eada4a3f14d678f7, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.03
+  m_Radius: 0.045
   m_Height: 0.23
   m_Direction: 2
   m_Center: {x: 0.12, y: 0, z: 0}
