@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 5393215578589016640}
   m_Layer: 7
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -592,6 +592,7 @@ MonoBehaviour:
   _accelerationSpeed: 10
   _rigidBody: {fileID: 4884186724383794951}
   _clawAnimator: {fileID: 4908085499258594835}
+  _maxVelocityMagnitude: 20
   _beam: {fileID: 3329802212876596114}
 --- !u!1001 &8400693774533129696
 PrefabInstance:
@@ -856,6 +857,7 @@ MonoBehaviour:
   _accelerationSpeed: 10
   _rigidBody: {fileID: 3989449883068637361}
   _clawAnimator: {fileID: 3497123980154331557}
+  _maxVelocityMagnitude: 20
   _beam: {fileID: 6530385497431553060}
 --- !u!114 &3497123980154331557 stripped
 MonoBehaviour:

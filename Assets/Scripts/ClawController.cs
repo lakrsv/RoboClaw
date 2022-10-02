@@ -19,6 +19,8 @@ public class ClawController : MonoBehaviour
     [SerializeField]
     private ClawAnimator _clawAnimator;
     [SerializeField]
+    private float _maxVelocityMagnitude;
+    [SerializeField]
     private Beam _beam;
 
     private Vector3 _parentedLocalPosition;
@@ -62,7 +64,6 @@ public class ClawController : MonoBehaviour
                     _initialPosition = transform.position;
                     _initialDistance = Vector3.Distance(transform.position, hit.point);
                     transform.SetParent(null);
-
                     if (hit.collider.CompareTag("GrabTarget"))
                     {
                         _grabTarget = hit.collider.GetComponent<GrabTarget>();
@@ -72,16 +73,30 @@ public class ClawController : MonoBehaviour
                 }
             }
         }
-        else
+    }
+
+    private void LateUpdate()
+    {
+        Debug.Log(_rigidBody.velocity.magnitude);
+        if (!_clawLaunched)
+        {
+            transform.localPosition = _parentedLocalPosition;
+            transform.localRotation = _parentedLocalRotation;
+            _rigidBody.velocity = Vector3.zero;
+        } else if(_grabTarget != null && transform.parent == _grabTarget.GrabChildTarget)
+        {
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if(_clawLaunched)
         {
             if (_currentLerp == 1f)
             {
                 return;
-            }
-
-            if (_grabTarget == null || _grabTarget.IsOccupied)
-            {
-                _rigidBody.isKinematic = false;
             }
 
 
@@ -94,7 +109,7 @@ public class ClawController : MonoBehaviour
             var newPosition = Vector3.Lerp(_initialPosition, goTo, _currentLerp);
             newPosition.y += _motionCurve.Evaluate(_currentLerp) * _maxHeightOffset;
 
-            var velocity = newPosition - transform.position;
+            var velocity = newPosition - _rigidBody.position;
 
             var lookRotation = Quaternion.LookRotation(velocity * 10f, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
             if (_currentLerp < 0.4f)
@@ -105,16 +120,22 @@ public class ClawController : MonoBehaviour
             {
                 if (_grabTarget != null)
                 {
-                    lookRotation = Quaternion.LookRotation(_grabTarget.GrabChildTarget.position - transform.position, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
+                    lookRotation = Quaternion.LookRotation(_grabTarget.GrabChildTarget.position - _rigidBody.position, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
                 }
                 else
                 {
-                    lookRotation = Quaternion.LookRotation(_hit.point - transform.position, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
+                    lookRotation = Quaternion.LookRotation(_hit.point - _rigidBody.position, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
                 }
             }
 
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, 360f * Time.deltaTime);
-            transform.position = newPosition;
+            if(_currentLerp > 0.7f && _grabTarget == null)
+            {
+                _rigidBody.isKinematic = false;
+            }
+
+            _rigidBody.rotation = Quaternion.RotateTowards(_rigidBody.rotation, lookRotation, 360f * Time.deltaTime);
+            _rigidBody.MovePosition(newPosition);
+            //transform.position = newPosition;
 
             if (_currentLerp == 1f)
             {
@@ -122,19 +143,14 @@ public class ClawController : MonoBehaviour
 
                 if (_grabTarget == null || _grabTarget.IsOccupied)
                 {
-                    // TODO - Enable rigidbody, the claw falls!
-                    _rigidBody.isKinematic = false;
-                    _rigidBody.velocity = velocity;
-
-                    // TODO - Recall routine
                     StartCoroutine(RecallClaw());
 
                 }
                 else
                 {
-                    transform.SetParent(_grabTarget.transform, false);
-                    transform.localPosition = _grabTarget.GrabChildTarget.localPosition;
-                    transform.localRotation = _grabTarget.GrabChildTarget.localRotation;
+                    transform.SetParent(_grabTarget.GrabChildTarget.transform, false);
+                    transform.localPosition = Vector3.zero;
+                    transform.localRotation = Quaternion.identity;
                     _clawAnimator.GrabTarget();
                     _grabTarget.IsOccupied = true;
                     _rigidBody.isKinematic = true;
@@ -142,6 +158,7 @@ public class ClawController : MonoBehaviour
 
             }
         }
+        _rigidBody.velocity = Vector3.ClampMagnitude(_rigidBody.velocity, _maxVelocityMagnitude);
     }
 
     private IEnumerator RecallClaw()
@@ -151,11 +168,19 @@ public class ClawController : MonoBehaviour
         //transform.SetParent(_originalParent.transform, true);
         _clawAnimator.CloseClaw();
         _rigidBody.isKinematic = true;
-        _beam.PlayBeam(Vector3.Distance(transform.position, _originalParent.TransformPoint(_parentedLocalPosition)) / _speed / 3f);
+        _beam.PlayBeam(2f);
         while (Vector3.Distance(transform.position, _originalParent.TransformPoint(_parentedLocalPosition)) > 0.1f)
         {
+            var remainingDistance = Vector3.Distance(transform.position, _originalParent.TransformPoint(_parentedLocalPosition));
             var lookRotation = Quaternion.LookRotation(Vector3.up, _originalParent.TransformPoint(_parentedLocalPosition) - transform.position);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Vector2.Distance(transform.position, _originalParent.TransformPoint(_parentedLocalPosition)) > 0.5f ? lookRotation : Quaternion.Inverse(lookRotation), 2 * 360f * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, remainingDistance > 1f ? lookRotation : Quaternion.Inverse(lookRotation), 2* 360f * Time.deltaTime);
+
+            if(remainingDistance < 1f)
+            {
+                _beam.StopBeam();
+            }
+
+
             transform.position = Vector3.MoveTowards(transform.position, _originalParent.TransformPoint(_parentedLocalPosition), _speed * 2 * Time.deltaTime);
             yield return null;
         }
@@ -167,5 +192,9 @@ public class ClawController : MonoBehaviour
         _grabTarget = null;
         _clawLaunched = false;
         _currentLerp = 0f;
+
+        yield return null;
+
+        _beam.StopBeam();
     }
 }

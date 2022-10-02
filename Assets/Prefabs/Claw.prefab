@@ -653,11 +653,7 @@ GameObject:
   - component: {fileID: 4908085497898243141}
   - component: {fileID: 2143349839291424901}
   - component: {fileID: 4884186724062090577}
-  - component: {fileID: 8062032594437954545}
-  - component: {fileID: 7850589992926244821}
-  - component: {fileID: 1722016522287942075}
-  - component: {fileID: 8989865344299848668}
-  - component: {fileID: 6517490324830130773}
+  - component: {fileID: 3695864970760185301}
   m_Layer: 2
   m_Name: Claw
   m_TagString: Untagged
@@ -823,6 +819,7 @@ MonoBehaviour:
   _accelerationSpeed: 5
   _rigidBody: {fileID: 4884186724062090577}
   _clawAnimator: {fileID: 4908085497898243141}
+  _maxVelocityMagnitude: 20
   _beam: {fileID: 3329802210969436612}
 --- !u!54 &4884186724062090577
 Rigidbody:
@@ -837,78 +834,22 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &8062032594437954545
-BoxCollider:
+--- !u!135 &3695864970760185301
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8400693775421533375}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7aefba854e54b79469d2710934ad99e4, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.22000141, y: 0.14833091, z: 0.22}
-  m_Center: {x: -1.8465429e-10, y: -0.0291655, z: -8.8652125e-10}
---- !u!136 &7850589992926244821
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8400693775421533375}
-  m_Material: {fileID: 13400000, guid: 806acd32a188ba44eada4a3f14d678f7, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.045
-  m_Height: 0.23
-  m_Direction: 0
-  m_Center: {x: 0, y: 0, z: 0.12}
---- !u!136 &1722016522287942075
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8400693775421533375}
-  m_Material: {fileID: 13400000, guid: 806acd32a188ba44eada4a3f14d678f7, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.045
-  m_Height: 0.23
-  m_Direction: 0
-  m_Center: {x: 0, y: 0.06, z: -0.12}
---- !u!136 &8989865344299848668
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8400693775421533375}
-  m_Material: {fileID: 13400000, guid: 806acd32a188ba44eada4a3f14d678f7, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.045
-  m_Height: 0.23
-  m_Direction: 2
-  m_Center: {x: -0.12, y: 0.06, z: 0}
---- !u!136 &6517490324830130773
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8400693775421533375}
-  m_Material: {fileID: 13400000, guid: 806acd32a188ba44eada4a3f14d678f7, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.045
-  m_Height: 0.23
-  m_Direction: 2
-  m_Center: {x: 0.12, y: 0, z: 0}
+  m_Radius: 0.25
+  m_Center: {x: 0, y: -0.11, z: 0}
 --- !u!1 &8400693775424297929
 GameObject:
   m_ObjectHideFlags: 0

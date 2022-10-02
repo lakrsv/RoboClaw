@@ -18,4 +18,9 @@ public class Beam : MonoBehaviour
         _beamEffect.SetFloat("Duration", duration);
         _beamEffect.Play();
     }
+
+    public void StopBeam()
+    {
+        _beamEffect.Stop();
+    }
 }
