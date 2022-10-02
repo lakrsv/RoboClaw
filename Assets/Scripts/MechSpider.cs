@@ -23,21 +23,49 @@ public class MechSpider : MonoBehaviour
     private Transform _player;
     private Vector3? _lastKnownPlayerPosition;
 
+    [SerializeField]
+    private Beam _beamOne;
+    [SerializeField]
+    private Beam _beamTwo;
+
+    private bool _isShaking = false;
+    private float _lastBeamTime;
+    private bool _isBeaming;
+
+    public bool IsBeaming => _isBeaming;
+
     private void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player").transform;
-        _agent.speed = _walkSpeed;
-        _agent.angularSpeed = _turningSpeed;
+        var minSpeed = _walkSpeed;
+        var maxSpeed = _walkSpeed * 2f;
+        _agent.speed = Random.Range(minSpeed, maxSpeed);
+        var minTurningSpeed = _turningSpeed;
+        var maxTurningSpeed = _turningSpeed * 2f;
+        _agent.angularSpeed = Random.Range(minTurningSpeed, maxTurningSpeed);
+        _isBeaming = false;
     }
 
-    private void Start()
+    public IEnumerator StartSpawning()
     {
+        _rigidbody.isKinematic = false;
+        _agent.enabled = false;
+
+        yield return new WaitForSeconds(2.0f);
+
+        _rigidbody.isKinematic = true;
+        _agent.enabled = true;
+
         StartCoroutine(UpdatePlayerTracking());
     }
 
     // Update is called once per frame
     private void FixedUpdate()
     {
+        if (!_agent.enabled)
+        {
+            return;
+        }
         Physics.Raycast(transform.position + Vector3.up * 0.25f, _player.position - transform.position, out RaycastHit hit, 100f, ~LayerMask.NameToLayer("Spider"));
         Debug.DrawLine(transform.position, hit.point, Color.red, 1.0f);
         if (hit.collider != null && hit.collider.CompareTag("Player"))
@@ -48,6 +76,10 @@ public class MechSpider : MonoBehaviour
 
     private void Update()
     {
+        if (!_agent.enabled)
+        {
+            return;
+        }
         _animator.SetFloat("Speed", _agent.velocity.magnitude);
     }
 
@@ -57,12 +89,40 @@ public class MechSpider : MonoBehaviour
         {
             if (_lastKnownPlayerPosition.HasValue)
             {
-                var directionToPlayer = (_lastKnownPlayerPosition.Value - transform.position).normalized;
-                var offsetPosition = _lastKnownPlayerPosition.Value - (directionToPlayer * _keepDistanceThreshold);
-                _agent.SetDestination(offsetPosition);
+                var distance = Vector3.Distance(_lastKnownPlayerPosition.Value, transform.position);
+                if (distance < 4f)
+                {
+                    var timePassed = Time.time - _lastBeamTime;
+                    if (timePassed > 6f)
+                    {
+                        _isBeaming = true;
+                        _beamOne.PlayBeam(3f);
+                        _beamTwo.PlayBeam(3f);
+                        StartCoroutine(DisableBeaming());
+                    }
+                }
+
+                if (distance > _keepDistanceThreshold + 0.5f)
+                {
+                    var directionToPlayer = (_lastKnownPlayerPosition.Value - transform.position).normalized;
+                    var offsetPosition = _lastKnownPlayerPosition.Value - (directionToPlayer * _keepDistanceThreshold);
+                    _agent.SetDestination(_lastKnownPlayerPosition.Value);
+                }
             }
             yield return new WaitForSeconds(0.25f);
         }
         yield return null;
+    }
+
+    private IEnumerator DisableBeaming()
+    {
+        yield return new WaitForSeconds(3.0f);
+        _isBeaming = false;
+    }
+
+    public void StartShaking()
+    {
+        _isShaking = true;
+        _animator.SetTrigger("Shake");
     }
 }

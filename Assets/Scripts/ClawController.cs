@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities.ObjectPool;
 
 public class ClawController : MonoBehaviour
 {
@@ -21,7 +22,11 @@ public class ClawController : MonoBehaviour
     [SerializeField]
     private float _maxVelocityMagnitude;
     [SerializeField]
-    private Beam _beam;
+    private Beam _moveBeam;
+    [SerializeField]
+    private Beam _attackBeam;
+    [SerializeField]
+    private LineRenderer _lineRenderer;
 
     private Vector3 _parentedLocalPosition;
     private Quaternion _parentedLocalRotation;
@@ -51,14 +56,13 @@ public class ClawController : MonoBehaviour
     {
         if (!_clawLaunched)
         {
-            if (Input.GetMouseButtonDown(_isRightClaw ? 1 : 0))
+            if (Input.GetMouseButtonUp(_isRightClaw ? 1 : 0))
             {
-                Physics.Raycast(transform.position, Camera.main.transform.forward, out RaycastHit hit);
+                _lineRenderer.positionCount = 0;
+                Physics.Raycast(transform.position, Camera.main.transform.forward, out RaycastHit hit, 100f, ~LayerMask.NameToLayer("BeamBox"));
                 //Debug.DrawLine(transform.position, hit.point, Color.green, 1.0f);
                 if (hit.collider != null)
                 {
-                    _clawAnimator.OpenClaw();
-
                     _hit = hit;
                     _clawLaunched = true;
                     _initialPosition = transform.position;
@@ -69,7 +73,11 @@ public class ClawController : MonoBehaviour
                         _grabTarget = hit.collider.GetComponent<GrabTarget>();
                     }
 
-                    _beam.PlayBeam(_initialDistance / _speed / 4f);
+                    _moveBeam.PlayBeam(_initialDistance / _speed / 4f);
+                }
+                else
+                {
+                    _clawAnimator.CloseClaw();
                 }
             }
         }
@@ -80,10 +88,18 @@ public class ClawController : MonoBehaviour
         Debug.Log(_rigidBody.velocity.magnitude);
         if (!_clawLaunched)
         {
+            if (Input.GetMouseButton(_isRightClaw ? 1 : 0))
+            {
+                _clawAnimator.OpenClaw();
+                _lineRenderer.positionCount = 2;
+                _lineRenderer.SetPosition(0, transform.position);
+                _lineRenderer.SetPosition(1, transform.position + Camera.main.transform.forward * 100);
+            }
             transform.localPosition = _parentedLocalPosition;
             transform.localRotation = _parentedLocalRotation;
             _rigidBody.velocity = Vector3.zero;
-        } else if(_grabTarget != null && transform.parent == _grabTarget.GrabChildTarget)
+        }
+        else if (_grabTarget != null && transform.parent == _grabTarget.GrabChildTarget)
         {
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
@@ -92,7 +108,7 @@ public class ClawController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(_clawLaunched)
+        if (_clawLaunched)
         {
             if (_currentLerp == 1f)
             {
@@ -128,7 +144,7 @@ public class ClawController : MonoBehaviour
                 }
             }
 
-            if(_currentLerp > 0.7f && _grabTarget == null)
+            if (_currentLerp > 0.7f && _grabTarget == null)
             {
                 _rigidBody.isKinematic = false;
             }
@@ -154,6 +170,8 @@ public class ClawController : MonoBehaviour
                     _clawAnimator.GrabTarget();
                     _grabTarget.IsOccupied = true;
                     _rigidBody.isKinematic = true;
+
+                    StartCoroutine(AttackTarget());
                 }
 
             }
@@ -168,16 +186,16 @@ public class ClawController : MonoBehaviour
         //transform.SetParent(_originalParent.transform, true);
         _clawAnimator.CloseClaw();
         _rigidBody.isKinematic = true;
-        _beam.PlayBeam(2f);
+        _moveBeam.PlayBeam(2f);
         while (Vector3.Distance(transform.position, _originalParent.TransformPoint(_parentedLocalPosition)) > 0.1f)
         {
             var remainingDistance = Vector3.Distance(transform.position, _originalParent.TransformPoint(_parentedLocalPosition));
             var lookRotation = Quaternion.LookRotation(Vector3.up, _originalParent.TransformPoint(_parentedLocalPosition) - transform.position);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, remainingDistance > 1f ? lookRotation : Quaternion.Inverse(lookRotation), 2* 360f * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, remainingDistance > 1f ? lookRotation : Quaternion.Inverse(lookRotation), 2 * 360f * Time.deltaTime);
 
-            if(remainingDistance < 1f)
+            if (remainingDistance < 1f)
             {
-                _beam.StopBeam();
+                _moveBeam.StopBeam();
             }
 
 
@@ -195,6 +213,40 @@ public class ClawController : MonoBehaviour
 
         yield return null;
 
-        _beam.StopBeam();
+        _moveBeam.StopBeam();
+    }
+
+    private IEnumerator AttackTarget()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _attackBeam.PlayBeam(2.0f);
+        yield return new WaitForSeconds(0.25f);
+        _grabTarget.transform.root.GetComponent<MechSpider>().StartShaking();
+        yield return new WaitForSeconds(1.5f);
+
+        var ragdollPosition = _grabTarget.transform.root.position;
+        var ragdollRotation = _grabTarget.transform.root.rotation;
+        var ragdoll = ObjectPools.Instance.GetPooledObject<MechSpiderRagdoll>();
+        if (ragdoll != null)
+        {
+            ragdoll.transform.position = ragdollPosition;
+            ragdoll.transform.rotation = ragdollRotation;
+        }
+
+        transform.SetParent(null);
+        _rigidBody.isKinematic = false;
+        _rigidBody.AddExplosionForce(1000f, ragdoll.transform.position, 2f);
+
+        _grabTarget.transform.root.gameObject.SetActive(false);
+
+        if (ragdoll != null)
+        {
+            StartCoroutine(ragdoll.Explode());
+        }
+        Destroy(_grabTarget.transform.root.gameObject);
+
+        UI.Instance.AddPlayerScore(1);
+
+        yield return RecallClaw();
     }
 }
