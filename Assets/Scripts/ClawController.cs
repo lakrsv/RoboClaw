@@ -18,9 +18,12 @@ public class ClawController : MonoBehaviour
     private Rigidbody _rigidBody;
     [SerializeField]
     private ClawAnimator _clawAnimator;
+    [SerializeField]
+    private Beam _beam;
 
     private Vector3 _parentedLocalPosition;
     private Quaternion _parentedLocalRotation;
+    private Quaternion _parentedWorldRotation;
     private Transform _originalParent;
 
     private bool _clawLaunched = false;
@@ -36,6 +39,7 @@ public class ClawController : MonoBehaviour
         // Not parented, but kind of.
         _parentedLocalPosition = transform.localPosition;
         _parentedLocalRotation = transform.localRotation;
+        _parentedWorldRotation = transform.rotation;
         _originalParent = transform.parent;
         _rigidBody.isKinematic = true;
     }
@@ -63,6 +67,8 @@ public class ClawController : MonoBehaviour
                     {
                         _grabTarget = hit.collider.GetComponent<GrabTarget>();
                     }
+
+                    _beam.PlayBeam(_initialDistance / _speed / 4f);
                 }
             }
         }
@@ -90,14 +96,24 @@ public class ClawController : MonoBehaviour
 
             var velocity = newPosition - transform.position;
 
-            var lookRotation = Quaternion.LookRotation(Vector3.up, newPosition - transform.position);
-
-            if (_currentLerp > 0.8f && _grabTarget != null)
+            var lookRotation = Quaternion.LookRotation(velocity * 10f, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
+            if (_currentLerp < 0.4f)
             {
-                lookRotation = Quaternion.LookRotation(Vector3.up, _grabTarget.GrabChildTarget.position - transform.position);
+                lookRotation *= Quaternion.Euler(-25f, 0f, 0f);
+            }
+            else if (_currentLerp > 0.4f && _currentLerp < 0.7f)
+            {
+                if (_grabTarget != null)
+                {
+                    lookRotation = Quaternion.LookRotation(_grabTarget.GrabChildTarget.position - transform.position, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
+                }
+                else
+                {
+                    lookRotation = Quaternion.LookRotation(_hit.point - transform.position, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
+                }
             }
 
-            transform.rotation = lookRotation;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, 360f * Time.deltaTime);
             transform.position = newPosition;
 
             if (_currentLerp == 1f)
@@ -111,6 +127,7 @@ public class ClawController : MonoBehaviour
                     _rigidBody.velocity = velocity;
 
                     // TODO - Recall routine
+                    StartCoroutine(RecallClaw());
 
                 }
                 else
@@ -125,5 +142,30 @@ public class ClawController : MonoBehaviour
 
             }
         }
+    }
+
+    private IEnumerator RecallClaw()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        //transform.SetParent(_originalParent.transform, true);
+        _clawAnimator.CloseClaw();
+        _rigidBody.isKinematic = true;
+        _beam.PlayBeam(Vector3.Distance(transform.position, _originalParent.TransformPoint(_parentedLocalPosition)) / _speed / 3f);
+        while (Vector3.Distance(transform.position, _originalParent.TransformPoint(_parentedLocalPosition)) > 0.1f)
+        {
+            var lookRotation = Quaternion.LookRotation(Vector3.up, _originalParent.TransformPoint(_parentedLocalPosition) - transform.position);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Vector2.Distance(transform.position, _originalParent.TransformPoint(_parentedLocalPosition)) > 0.5f ? lookRotation : Quaternion.Inverse(lookRotation), 2 * 360f * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _originalParent.TransformPoint(_parentedLocalPosition), _speed * 2 * Time.deltaTime);
+            yield return null;
+        }
+
+        transform.SetParent(_originalParent);
+        transform.localPosition = _parentedLocalPosition;
+        transform.localRotation = _parentedLocalRotation;
+
+        _grabTarget = null;
+        _clawLaunched = false;
+        _currentLerp = 0f;
     }
 }
