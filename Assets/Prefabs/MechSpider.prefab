@@ -75,6 +75,7 @@ MonoBehaviour:
   _walkSpeed: 2.5
   _turningSpeed: 90
   _turretTurningSpeed: 90
+  _keepDistanceThreshold: 2
 --- !u!54 &3184407356997897970
 Rigidbody:
   m_ObjectHideFlags: 0

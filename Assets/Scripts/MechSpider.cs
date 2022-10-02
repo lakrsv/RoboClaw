@@ -17,6 +17,8 @@ public class MechSpider : MonoBehaviour
     private float _turningSpeed;
     [SerializeField]
     private float _turretTurningSpeed;
+    [SerializeField]
+    private float _keepDistanceThreshold;
 
     private Transform _player;
     private Vector3? _lastKnownPlayerPosition;
@@ -55,7 +57,9 @@ public class MechSpider : MonoBehaviour
         {
             if (_lastKnownPlayerPosition.HasValue)
             {
-                _agent.SetDestination(_lastKnownPlayerPosition.Value);
+                var directionToPlayer = (_lastKnownPlayerPosition.Value - transform.position).normalized;
+                var offsetPosition = _lastKnownPlayerPosition.Value - (directionToPlayer * _keepDistanceThreshold);
+                _agent.SetDestination(offsetPosition);
             }
             yield return new WaitForSeconds(0.25f);
         }

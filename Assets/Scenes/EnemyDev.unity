@@ -399,10 +399,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2392886061335454483, guid: 7abe7b514f64f9f4db350acf95250ebe, type: 3}
-      propertyPath: m_Radius
-      value: 0.33
-      objectReference: {fileID: 0}
     - target: {fileID: 3184407356997897969, guid: 7abe7b514f64f9f4db350acf95250ebe, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -450,18 +446,6 @@ PrefabInstance:
     - target: {fileID: 3184407356997897983, guid: 7abe7b514f64f9f4db350acf95250ebe, type: 3}
       propertyPath: m_Name
       value: MechSpider
-      objectReference: {fileID: 0}
-    - target: {fileID: 5612872808805674494, guid: 7abe7b514f64f9f4db350acf95250ebe, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 5612872808805674494, guid: 7abe7b514f64f9f4db350acf95250ebe, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 5612872808805674494, guid: 7abe7b514f64f9f4db350acf95250ebe, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7abe7b514f64f9f4db350acf95250ebe, type: 3}
@@ -1108,14 +1092,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 863468266, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
-      propertyPath: _maxVelocityMagnitude
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 1350597041, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
-      propertyPath: _maxVelocityMagnitude
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       propertyPath: m_Name
       value: Player

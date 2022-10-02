@@ -819,7 +819,7 @@ MonoBehaviour:
   _accelerationSpeed: 5
   _rigidBody: {fileID: 4884186724062090577}
   _clawAnimator: {fileID: 4908085497898243141}
-  _maxVelocityMagnitude: 20
+  _maxVelocityMagnitude: 10
   _beam: {fileID: 3329802210969436612}
 --- !u!54 &4884186724062090577
 Rigidbody:
