@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55919ac34a26952479f3fc91f777b2fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 4
+  MoveSpeed: 6
   SprintSpeed: 6
   RotationSpeed: 1
   SpeedChangeRate: 10
@@ -612,6 +612,7 @@ MonoBehaviour:
   _moveBeam: {fileID: 3329802212876596114}
   _attackBeam: {fileID: 6324765269914428375}
   _lineRenderer: {fileID: 1952743697298290575}
+  _otherClaw: {fileID: 1350597041}
 --- !u!1001 &8400693774533129696
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -879,6 +880,7 @@ MonoBehaviour:
   _moveBeam: {fileID: 6530385497431553060}
   _attackBeam: {fileID: 2545473846588122209}
   _lineRenderer: {fileID: 8038019823492165689}
+  _otherClaw: {fileID: 863468266}
 --- !u!114 &2545473846588122209 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6324765269680935297, guid: 0cdc81f22bb543c419ee1cb1e9ef533c, type: 3}

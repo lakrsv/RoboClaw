@@ -11,6 +11,7 @@ public class StartUI : MonoBehaviour
 
     private void Start()
     {
+        Cursor.visible = true;
         var highScore = PlayerPrefs.GetInt("Highscore", 0);
         _highScoreText.text = $"High score: {highScore}";
     }

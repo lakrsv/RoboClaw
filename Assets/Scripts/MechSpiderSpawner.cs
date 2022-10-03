@@ -17,9 +17,14 @@ public class MechSpiderSpawner : MonoBehaviour
     private Transform[] _spawnPoints;
     // Start is called before the first frame update
 
-    private int _currentSpawns = 1;
     private bool _gameStarted = false;
 
+    private float _minSpeed = 1.5f;
+    private float _maxSpeed = 2.0f;
+    private float _minTurnSpeed = 45f;
+    private float _maxTurnSpeed = 90f;
+
+    public int Waves;
     public float SecondsUntilSpawn = 10;
 
     void Awake()
@@ -42,22 +47,39 @@ public class MechSpiderSpawner : MonoBehaviour
     {
         while (true)
         {
+            Waves++;
+
+            var currentSpawns = Waves;
+            currentSpawns = Mathf.Clamp(currentSpawns, 1, MAX_SPAWNS);
+
             var spawnpoints = _spawnPoints.OrderBy(a => rng.Next()).ToList();
-            for (int i = 0; i < _currentSpawns; ++i)
+            for (int i = 0; i < currentSpawns; ++i)
             {
+                var speed = Random.Range(_minSpeed, _maxSpeed);
+                var turningSpeed = Random.Range(_minTurnSpeed, _maxTurnSpeed);
+
                 var spawnPoint = spawnpoints[i];
                 var mechSpider = GameObject.Instantiate(_mechSpiderPrefab);
                 mechSpider.transform.position = spawnPoint.position;
                 StartCoroutine(mechSpider.StartSpawning());
+                
+                mechSpider.SetStats(speed, turningSpeed);
             }
-            _currentSpawns++;
-            if(_currentSpawns > MAX_SPAWNS)
-            {
-                _currentSpawns = MAX_SPAWNS;
-            }
+
+
             SecondsUntilSpawn = 10f;
             yield return new WaitForSeconds(10f);
 
+            _minTurnSpeed += 25f;
+            _maxTurnSpeed += 25f;
+
+            _minSpeed += 0.5f;
+            _maxSpeed += 0.5f;
+
+            _minSpeed = Mathf.Min(3.5f, _minSpeed);
+            _maxSpeed = Mathf.Min(5.0f, _maxSpeed);
+            _minTurnSpeed = Mathf.Min(360f, _minTurnSpeed);
+            _maxTurnSpeed = Mathf.Min(360f, _maxTurnSpeed);
         }
     }
 

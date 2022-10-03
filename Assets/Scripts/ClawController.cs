@@ -27,6 +27,8 @@ public class ClawController : MonoBehaviour
     private Beam _attackBeam;
     [SerializeField]
     private LineRenderer _lineRenderer;
+    [SerializeField]
+    private ClawController _otherClaw;
 
     private Vector3 _parentedLocalPosition;
     private Quaternion _parentedLocalRotation;
@@ -40,6 +42,8 @@ public class ClawController : MonoBehaviour
     private float _currentLerp;
     private GrabTarget _grabTarget;
     //private float _targetOffset = 0.13206f;
+
+    public GrabTarget GrabTarget => _grabTarget;
 
     private void Awake()
     {
@@ -59,7 +63,7 @@ public class ClawController : MonoBehaviour
             if (Input.GetMouseButtonUp(_isRightClaw ? 1 : 0))
             {
                 _lineRenderer.positionCount = 0;
-                Physics.Raycast(transform.position, Camera.main.transform.forward, out RaycastHit hit, 100f, ~LayerMask.NameToLayer("BeamBox"));
+                Physics.Raycast(transform.position, Camera.main.transform.forward, out RaycastHit hit, 20f);
                 //Debug.DrawLine(transform.position, hit.point, Color.green, 1.0f);
                 if (hit.collider != null)
                 {
@@ -85,7 +89,6 @@ public class ClawController : MonoBehaviour
 
     private void LateUpdate()
     {
-        Debug.Log(_rigidBody.velocity.magnitude);
         if (!_clawLaunched)
         {
             if (Input.GetMouseButton(_isRightClaw ? 1 : 0))
@@ -224,28 +227,43 @@ public class ClawController : MonoBehaviour
         _grabTarget.transform.root.GetComponent<MechSpider>().StartShaking();
         yield return new WaitForSeconds(1.5f);
 
-        var ragdollPosition = _grabTarget.transform.root.position;
-        var ragdollRotation = _grabTarget.transform.root.rotation;
-        var ragdoll = ObjectPools.Instance.GetPooledObject<MechSpiderRagdoll>();
-        if (ragdoll != null)
-        {
-            ragdoll.transform.position = ragdollPosition;
-            ragdoll.transform.rotation = ragdollRotation;
-        }
-
         transform.SetParent(null);
         _rigidBody.isKinematic = false;
-        _rigidBody.AddExplosionForce(1000f, ragdoll.transform.position, 2f);
+        _rigidBody.AddExplosionForce(1000f, _grabTarget.transform.position, 2f);
 
-        _grabTarget.transform.root.gameObject.SetActive(false);
+        var explosionPosition = _grabTarget.transform.position;
 
-        if (ragdoll != null)
+        var affected = Physics.SphereCastAll(_grabTarget.transform.root.position, 4f, Vector3.up, 20f, LayerMask.GetMask("Spider"));
+        foreach (var body in affected)
         {
-            StartCoroutine(ragdoll.Explode());
-        }
-        Destroy(_grabTarget.transform.root.gameObject);
+            if (body.collider.CompareTag("Spider"))
+            {
+                var ragdollPosition = body.transform.root.position;
+                var ragdollRotation = body.transform.root.rotation;
+                var ragdoll = ObjectPools.Instance.GetPooledObject<MechSpiderRagdoll>();
+                if (ragdoll != null)
+                {
+                    ragdoll.transform.position = ragdollPosition;
+                    ragdoll.transform.rotation = ragdollRotation;
+                }
 
-        UI.Instance.AddPlayerScore(1);
+                if(_otherClaw.GrabTarget != null && _otherClaw.GrabTarget.transform.root == body.transform.root)
+                {
+                    _otherClaw.transform.SetParent(null);
+                    _otherClaw.StopAllCoroutines();
+                    StartCoroutine(_otherClaw.RecallClaw());
+                }
+
+                Destroy(body.transform.root.gameObject);
+                if (ragdoll != null)
+                {
+                    StartCoroutine(ragdoll.Explode(explosionPosition));
+                }
+
+                UI.Instance.AddPlayerScore(1);
+            }
+        }
+
 
         yield return RecallClaw();
     }

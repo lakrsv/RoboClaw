@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 3823837105187916211}
   - component: {fileID: 8783863952674490761}
   - component: {fileID: 4823180810412381771}
-  m_Layer: 10
+  m_Layer: 2
   m_Name: BeamBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 4}
+  m_Size: {x: 1, y: 2.64, z: 4}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4823180810412381771
 MonoBehaviour:

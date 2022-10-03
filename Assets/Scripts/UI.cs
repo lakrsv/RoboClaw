@@ -28,6 +28,7 @@ public class UI : MonoSingleton<UI>
 
     private void Start()
     {
+        Cursor.visible = false;
         var highScore = PlayerPrefs.GetInt("Highscore", 0);
         _highScoreText.text = $"High score: {highScore}";
     }
@@ -92,7 +93,7 @@ public class UI : MonoSingleton<UI>
         var highscore = PlayerPrefs.GetInt("Highscore", 0);
         if (_currentScore > highscore)
         {
-            _highScoreText.text = $"High score: {highscore}";
+            _highScoreText.text = $"High score: {_currentScore}";
 
             PlayerPrefs.SetInt("Highscore", _currentScore);
             PlayerPrefs.Save();

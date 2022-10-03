@@ -17,7 +17,7 @@ public class MechSpiderRagdoll : MonoBehaviour, IPoolable
     {
     }
 
-    public IEnumerator Explode()
+    public IEnumerator Explode(Vector3 position)
     {
         _explosion.Explode();
         yield return null;
@@ -25,7 +25,7 @@ public class MechSpiderRagdoll : MonoBehaviour, IPoolable
         foreach (var body in _rigidBodies)
         {
             body.constraints = RigidbodyConstraints.None;
-            body.AddExplosionForce(500f, transform.position, 2f, 0.25f);
+            body.AddExplosionForce(500f, position, 6f, 0.25f);
         }
     }
 

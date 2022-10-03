@@ -37,13 +37,16 @@ public class MechSpider : MonoBehaviour
     private void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player").transform;
-        var minSpeed = _walkSpeed;
-        var maxSpeed = _walkSpeed * 2f;
-        _agent.speed = Random.Range(minSpeed, maxSpeed);
-        var minTurningSpeed = _turningSpeed;
-        var maxTurningSpeed = _turningSpeed * 2f;
-        _agent.angularSpeed = Random.Range(minTurningSpeed, maxTurningSpeed);
         _isBeaming = false;
+    }
+
+    public void SetStats(float walkSpeed, float turnSpeed)
+    {
+        _walkSpeed = walkSpeed;
+        _turningSpeed = turnSpeed;
+        _turretTurningSpeed = turnSpeed;
+        _agent.speed = walkSpeed;
+        _agent.angularSpeed = turnSpeed;
     }
 
     public IEnumerator StartSpawning()
@@ -99,6 +102,7 @@ public class MechSpider : MonoBehaviour
                         _beamOne.PlayBeam(3f);
                         _beamTwo.PlayBeam(3f);
                         StartCoroutine(DisableBeaming());
+                        _lastBeamTime = Time.time;
                     }
                 }
 
